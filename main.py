@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import openpyxl
-from function import file_auto_detection,create_new_df,modify_dataframe_columns,modify_dataframe_rows,clean_dataframe,view_dataframe,manage_dataframe,write_changes
-from graphs import line_plot,bar_plot,histogram,pie_chart,stack_plot
+from function import file_auto_detection,create_new_df,modify_dataframe_columns,modify_dataframe_rows,clean_dataframe,view_dataframe,manage_dataframe,write_changes,get_filter_data,filter_dataframe
+from graphs import line_plot,bar_plot,histogram,pie_chart,stack_plot,scatter_plot
 
 def main(): 
     try:
@@ -33,11 +33,10 @@ def main():
             while True:
                 try:
                     print()
-                    print("Modify columns - 1 \t Modify rows - 2 \t Clean data - 3")
-                    print("View dataframe - 4 \t Manage dataframe - 5 \t Graphs - 6")
-                    print("Enter 'quit' to exit.\t Note: file changes will be saved ")
-                    print("Press enter to go back")
-                    choice = input(">").lower()
+                    print("1 - Modify columns \n2 - Modify rows \n3 - Clean data \t\t Enter 'quit' to exit.")
+                    print("4 - View dataframe \t Press enter to go back \n5 - Manage dataframe \n6 - Filter dataframe \n7 - Graphs")
+                    print("Note: file changes will be saved if the file path is given else changes will not be applied to dataframe when you quit")
+                    choice = input("> ").lower()
                     if choice == "quit":
                         file_path = input("Enter the file path to save changes: ")
                         try:   
@@ -57,9 +56,13 @@ def main():
                         view_dataframe(df)
                     elif choice == 5:
                         manage_dataframe(df)
-                    elif choice == 6:
+                    elif choice== 6:
+                        filter_dict = get_filter_data()
+                        if filter_dict:
+                            filtered_df = filter_dataframe(df, filter_dict)
+                    elif choice == 7:
                         print()
-                        print("Line plots - 1 \t Bar plots - 2 \t Histograms - 3\nPie charts - 4 \t Area plots - 5")
+                        print("1 - Line plots \n2 - Bar plots \n3 - Histograms \n4 - Pie charts \n5 -  Area plots \n6 - scatter plot")
                         choose = int(input("Enter the graph no. to plot: "))
                         if choose == 1:
                             column_x = input("Enter the name of the column for x axis (case sensitive): ")
@@ -88,8 +91,11 @@ def main():
                                 column_data = input(f"Enter column name {i+1} (case sensitive):")
                                 column.append(column_data)      
                             stack_plot(df,column)                     
-                        else:
-                            None
+                        elif choose == 6:
+                            column_x = input("Enter column name to be used for x axis: ")
+                            column_y = input("Enter column name to be used for y axis: ")
+                            size = int(input("Enter the size for scatterplot: "))
+                            scatter_plot(df,column_x,column_y,size)                           
                     else:
                         print("Invalid choice")
                 except ValueError:

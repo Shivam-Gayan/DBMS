@@ -173,3 +173,38 @@ def stack_plot(df, columns):
             plt.show()
     except:
         print("please enter valid input")
+
+def scatter_plot(df,column_x,column_y,size):
+    
+    if column_x not in df.columns:
+        print(f"Error: Column '{column_x}' does not exist in the DataFrame.")
+        return
+    if column_y not in df.columns:
+        print(f"Error: Column '{column_y}' does not exist in the DataFrame.")
+        return
+    
+    if not pd.api.types.is_numeric_dtype(df[column_x]):
+        print(f"Error: Column '{column_x}' does not contain numeric values.")
+        return
+    
+    if not pd.api.types.is_numeric_dtype(df[column_y]):
+        print(f"Error: Column '{column_y}' does not contain numeric values.")
+        return
+    
+    df.plot.scatter(x=column_x,y=column_y, s=size)
+    name_x = input("Enter the label for x axis: ")
+    name_y = input("Enter the label for y axis: ")
+    title = input("Enter the title for the graph: ")
+    plt.xlabel(name_x)
+    plt.ylabel(name_y)
+    plt.title(title)
+    
+    try:
+        choose = input("Do you want to export the graph (yes/no): ").lower()
+        if choose == "yes":
+            plt.savefig(f"{title}.png")
+            plt.show()
+        elif choose == "no":
+            plt.show()
+    except:
+        print("please enter valid input")

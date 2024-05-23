@@ -6,12 +6,12 @@ This Python script provides a comprehensive tool for managing and visualizing da
 
 ## Installation
 
-## To run this script, you need to have the following Python packages installed:
+### To run this script, you need to have the following Python packages installed:
 
-- pandas
-- numpy
-- matplotlib
-- openpyxl
+* pandas
+* numpy
+* matplotlib
+* openpyxl
 
 You can install these packages using pip:
 ```sh
@@ -28,13 +28,14 @@ pip install pandas numpy matplotlib openpyxl
 4. Manage Dataframes: Additional management features.
 5. Visualization: Create line plots, bar plots, histograms, pie charts, and stack plots.
 
-# Usage
+## Usage
 
 Run the script using Python:
 ```sh
 python main.py
 ```
-### Follow the on-screen instructions to perform various operations. The menu-driven interface allows you to select options and input necessary parameters.
+
+## Follow the on-screen instructions to perform various operations. The menu-driven interface allows you to select options and input necessary parameters.
 
 ### Main Menu Options
 
@@ -43,6 +44,7 @@ python main.py
 * Clean Data: Clean the dataframe.
 * View Dataframe: View the current state of the dataframe.
 * Manage Dataframe: Additional dataframe management options.
+* Filter Dataframe: Filter dataframe based on specified conditions.
 
 ### Graphs: Create various types of plots.
 
@@ -53,3 +55,4 @@ python main.py
 * Histogram: Create a histogram.
 * Pie Chart: Create a pie chart by specifying the data and label columns.
 * Stack Plot: Create a stack plot by specifying the columns to be used.
+* Scatter Plot: Create a scatter plot by specifying the columns to be used.

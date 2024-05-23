@@ -38,6 +38,7 @@ def create_new_df():
     ]
     
     # Collect column names and their data types
+    print("Note: if the columns are not given by the user empty dataframe will be created.")
     while True:
         column_name = input("Enter column name (press Enter to stop adding columns): ")
         if column_name == "":
@@ -367,4 +368,145 @@ def write_changes(df, file_path):
         return None
     else:
         print("File type not supported for writing changes.")
+
+def get_filter_data():
+    """Prompts the user to input filter data for multiple columns and returns it as a dictionary."""
+    filter_dict = {}
+
+    while True:
+        column = input("Enter the column name to filter (or 'done' to finish): ")
+        if column.lower() == 'done':
+            break
+
+        if column not in filter_dict:
+            filter_dict[column] = []
+
+        while True:
+            while True:
+                filter_type = input(f"Enter the filter type (gt, lt, ge, le, eq, ne, startswith, endswith, contains, isin) for column '{column}': ")
+                if filter_type not in ['gt', 'lt', 'ge', 'le', 'eq', 'ne', 'startswith', 'endswith', 'contains', 'isin']:
+                    print("Invalid filter type. Please enter a valid filter type.")
+                else:
+                    break
+
+            criteria = input(f"Enter the filter criteria for column '{column}': ")
+
+            # Convert criteria to the appropriate type based on filter type
+            if filter_type in ['gt', 'lt', 'ge', 'le', 'eq', 'ne']:
+                try:
+                    criteria = float(criteria)
+                except ValueError:
+                    print("Invalid input for criteria. Please enter a numeric value.")
+                    continue
+            elif filter_type == 'isin':
+                criteria = criteria.split(',')
+
+            filter_data = {
+                'type': filter_type,
+                'criteria': criteria
+            }
+
+            filter_dict[column].append(filter_data)
+
+            more_conditions = input(f"Do you want to add another condition for column '{column}'? (yes/no): ")
+            if more_conditions.lower() != 'yes':
+                break
+
+    return filter_dict
+
+def apply_filters(df, column, filters):
+    """Applies a list of filters to a specified column in the DataFrame."""
+    mask = pd.Series([True] * len(df), index=df.index)
+    
+    for filter_data in filters:
+        filter_type = filter_data['type']
+        criteria = filter_data['criteria']
+        
+        # Determine the data type of the column
+        column_dtype = df[column].dtype
+        
+        if filter_type in ['gt', 'lt', 'ge', 'le', 'eq', 'ne']:
+            if pd.api.types.is_numeric_dtype(column_dtype):
+                if filter_type == 'gt':
+                    mask &= df[column] > criteria
+                elif filter_type == 'lt':
+                    mask &= df[column] < criteria
+                elif filter_type == 'ge':
+                    mask &= df[column] >= criteria
+                elif filter_type == 'le':
+                    mask &= df[column] <= criteria
+                elif filter_type == 'eq':
+                    mask &= df[column] == criteria
+                elif filter_type == 'ne':
+                    mask &= df[column] != criteria
+            else:
+                print(f"Error: Filter type '{filter_type}' is not supported for non-numeric column '{column}'.")
+                return None
+
+        elif filter_type in ['startswith', 'endswith', 'contains']:
+            if pd.api.types.is_string_dtype(column_dtype):
+                if filter_type == 'startswith':
+                    mask &= df[column].str.lower().str.startswith(criteria.lower())
+                elif filter_type == 'endswith':
+                    mask &= df[column].str.lower().str.endswith(criteria.lower())
+                elif filter_type == 'contains':
+                    mask &= df[column].str.lower().str.contains(criteria.lower())
+            else:
+                print(f"Error: Filter type '{filter_type}' is not supported for non-string column '{column}'.")
+                return None
+
+        elif filter_type == 'isin':
+            if isinstance(criteria, (list, set, pd.Series)):
+                mask &= df[column].isin(criteria)
+            else:
+                print(f"Error: Criteria for 'isin' filter must be a list, set, or Series.")
+                return None
+
+        else:
+            print(f"Error: Filter type '{filter_type}' is not supported.")
+            return None
+
+    return mask
+
+def filter_dataframe(df, filter_dict):
+
+    combined_mask = pd.Series([True] * len(df), index=df.index)
+    valid_columns = []
+    initial_length = len(df)
+
+    for column, filters in filter_dict.items():
+        if column not in df.columns:
+            print(f"Error: Column '{column}' not found in DataFrame.")
+            continue
+        
+        # Apply all filters for the current column and update the combined mask
+        column_mask = apply_filters(df, column, filters)
+        
+        if column_mask is not None:
+            combined_mask &= column_mask
+            valid_columns.append(column)
+            if len(valid_columns) > 0 :
+                print(f"DataFrame after applying filters: {filters} on column '{column}'")
+                print(df[column_mask])
+
+    # Filter the DataFrame using the combined mask
+    filtered_df = df[combined_mask]
+    
+    # Check if there are valid columns and the final filtered DataFrame has fewer rows than the initial DataFrame
+    if len(valid_columns) > 1 or (len(valid_columns) == 1 and len(filtered_df) < initial_length):
+        print("Final filtered DataFrame:")
+        print(filtered_df)
+    elif len(valid_columns) == 0:
+        print("No valid filters applied. No changes made to the DataFrame.")
+    else:
+        print("Invalid filter criteria applied. No valid filtered data to display.")
+
+    return filtered_df
+
+# Example usage
+df = pd.DataFrame({
+    'A': [10, 20, 30, 40, 50],
+    'B': ['foo', 'bar', 'baz', 'qux', 'quux'],
+    'C': [True, False, True, False, True]
+})
 
