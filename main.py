@@ -62,7 +62,7 @@ def main():
                             filtered_df = filter_dataframe(df, filter_dict)
                     elif choice == 7:
                         print()
-                        print("1 - Line plots \n2 - Bar plots \n3 - Histograms \n4 - Pie charts \n5 -  Area plots \n6 - scatter plot")
+                        print("1 - Line plots \n2 - Bar plots \n3 - Histograms \n4 - Pie charts \n5 - Area plots \n6 - scatter plot")
                         choose = int(input("Enter the graph no. to plot: "))
                         if choose == 1:
                             column_x = input("Enter the name of the column for x axis (case sensitive): ")
