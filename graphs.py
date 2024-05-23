@@ -95,7 +95,6 @@ def bar_plot(df, columns):
     except:
         print("please enter valid input")
 
-
 def histogram(df):
     columnname = input("Enter the name of the attribute: ")
 
@@ -157,8 +156,6 @@ def pie_chart(df, size_column, labels_column=None):
             plt.show()
     except:
         print("please enter valid input")
-
-
 
 def stack_plot(df, columns):
 

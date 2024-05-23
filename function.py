@@ -116,7 +116,6 @@ def create_new_df():
     print("DataFrame created successfully")
     return df
 
-
 def modify_dataframe_columns(df): # to modify column
     print()
     print("1 - add a column \n2 - insert column at a specified index \n3 - remove a column \n4 - set column index \n5 - change column names")
@@ -344,7 +343,6 @@ def manage_dataframe(df):
         print()
     return df
 
-
 def write_changes(df, file_path):
     file_formats = {
         "xlsx": df.to_excel,
@@ -383,7 +381,7 @@ def get_filter_data():
 
         while True:
             while True:
-                filter_type = input(f"Enter the filter type (gt, lt, ge, le, eq, ne, startswith, endswith, contains, isin) for column '{column}': ")
+                filter_type = input(f"Enter the filter type (gt (greater than), lt (less than), ge (greater than or equal to), le (less than or equal to), eq (equal to), ne (not equal to), startswith, endswith, contains, isin) for column '{column}': ")
                 if filter_type not in ['gt', 'lt', 'ge', 'le', 'eq', 'ne', 'startswith', 'endswith', 'contains', 'isin']:
                     print("Invalid filter type. Please enter a valid filter type.")
                 else:
@@ -502,11 +500,3 @@ def filter_dataframe(df, filter_dict):
         print("Invalid filter criteria applied. No valid filtered data to display.")
 
     return filtered_df
-
-# Example usage
-df = pd.DataFrame({
-    'A': [10, 20, 30, 40, 50],
-    'B': ['foo', 'bar', 'baz', 'qux', 'quux'],
-    'C': [True, False, True, False, True]
-})
-
