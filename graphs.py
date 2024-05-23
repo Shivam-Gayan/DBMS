@@ -2,26 +2,46 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-def line_plot(df, x, y):
-
-    if x not in df.columns:
+def line_plot(df, x=None, y=None):
+    # Check if both x and y are None
+    if x is None and y is None:
+        print("Error: At least one of 'x' or 'y' must be provided.")
+        return
+    
+    if x is not None and x not in df.columns:
         print(f"Error: Column '{x}' does not exist in the DataFrame.")
         return
-    if y not in df.columns:
+    if y is not None and y not in df.columns:
         print(f"Error: Column '{y}' does not exist in the DataFrame.")
         return
-    if df[x].dtype not in ["int64", "float64"] and df[y].dtype not in ["int64", "float64"]:
-        print(f"Error: Column is not numeric.")
-        return
+    if x is not None and y is not None:
+        if df[x].dtype not in ["int64", "float64"] or df[y].dtype not in ["int64", "float64"]:
+            print(f"Error: Columns are not numeric.")
+            return
+    elif x is None and y is not None:
+        if df[y].dtype not in ["int64", "float64"]:
+            print(f"Error: Column '{y}' is not numeric.")
+            return
+    elif x is not None and y is None:
+        if df[x].dtype not in ["int64", "float64"]:
+            print(f"Error: Column '{x}' is not numeric.")
+            return
 
     name_x = input("Enter the label for x axis: ")
     name_y = input("Enter the label for y axis: ")
     title = input("Enter the title for the graph: ")
 
-    plt.plot(df[x], df[y])
+    if x is not None and y is not None:
+        plt.plot(df[x], df[y])
+    elif y is not None:
+        plt.plot(df.index, df[y])
+    elif x is not None:
+        plt.plot(df.index, df[x])
+
     plt.xlabel(name_x)
     plt.ylabel(name_y)
     plt.title(title)
+    
     try:
         choose = input("Do you want to export the graph (yes/no): ").lower()
         if choose == "yes":
@@ -30,7 +50,7 @@ def line_plot(df, x, y):
         elif choose == "no":
             plt.show()
     except:
-        print("please enter valid input")
+        print("Please enter valid input.")
 
 def bar_plot(df, columns):
 

@@ -26,7 +26,8 @@ pip install pandas numpy matplotlib openpyxl
 2. Modify Dataframes: Options to modify columns, rows, and clean data.
 3. View Dataframes: Display the dataframe.
 4. Manage Dataframes: Additional management features.
-5. Visualization: Create line plots, bar plots, histograms, pie charts, and stack plots.
+5. Filter Datafames: Filter dataframe based on conditions.
+6. Visualization: Create line plots, bar plots, histograms, pie charts,stack plots and scatter plots.
 
 ## Usage
 

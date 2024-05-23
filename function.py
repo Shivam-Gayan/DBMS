@@ -119,7 +119,7 @@ def create_new_df():
 
 def modify_dataframe_columns(df): # to modify column
     print()
-    print("add a column - 1 \t insert column at a specified index - 2 \t remove a column - 3\nset column index - 4 \t change column names - 5")
+    print("1 - add a column \n2 - insert column at a specified index \n3 - remove a column \n4 - set column index \n5 - change column names")
     choice = input("Enter your choice: ")
 
     if choice == "1":
@@ -159,7 +159,7 @@ def modify_dataframe_columns(df): # to modify column
 
 def modify_dataframe_rows(df):
     print()
-    print("Add a row - 1\nInsert a row at a specified index - 2\nRemove a row - 3\nSet labeled row indexes - 4")
+    print("1 - Add a row \n2 - Insert a row at a specified index \n3 - Remove a row \n4 - Set labeled row indexes")
     choice = input("Enter your choice: ")
 
     if choice == "1":
@@ -197,7 +197,7 @@ def modify_dataframe_rows(df):
 
 def clean_dataframe(df):
     print()
-    print("Handle Missing Values - 1 \t Remove Duplicates - 2 \t Drop Rows or Columns - 3\nFill Missing Values - 4 \t Reset Index - 5")
+    print("1 - Handle Missing Values \n2 - Remove Duplicates \n3 - Drop Rows or Columns \n4 - Fill Missing Values \n5 - Reset Index")
 
     choice = input("Enter your choice: ")
 
@@ -251,7 +251,7 @@ def clean_dataframe(df):
 
 def view_dataframe(df):
     print()
-    print("View by Label - 1 \t View by Index -2 \t View first n records - 3 \t View Last n records - 4")
+    print("1 - View by Label \n2 - View by Index \n3 - View first n records \n4 - View Last n records")
 
     choice = input("Enter your choice: ")
 
@@ -294,10 +294,10 @@ def view_dataframe(df):
 def manage_dataframe(df):
     print()
     print("DataFrame Management Options:")
-    print("1. View DataFrame Info")
-    print("2. Change DataFrame Settings")
-    print("3. Count Values")
-    print("4. Transpose DataFrame and Export")
+    print("1 - View DataFrame Info")
+    print("2 - Change DataFrame Settings")
+    print("3 - Count Values")
+    print("4 - Transpose DataFrame and Export")
 
     choice = input("Enter your choice: ")
 
@@ -372,7 +372,7 @@ def write_changes(df, file_path):
 def get_filter_data():
     """Prompts the user to input filter data for multiple columns and returns it as a dictionary."""
     filter_dict = {}
-
+    print()
     while True:
         column = input("Enter the column name to filter (or 'done' to finish): ")
         if column.lower() == 'done':
