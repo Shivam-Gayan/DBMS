@@ -35,9 +35,11 @@ def main():
                     print()
                     print("1 - Modify columns \n2 - Modify rows \n3 - Clean data \t\t Enter 'quit' to exit.")
                     print("4 - View dataframe \t Press enter to go back \n5 - Manage dataframe \n6 - Filter dataframe \n7 - Graphs")
-                    print("Note: file changes will be saved if the file path is given else changes will not be applied to dataframe when you quit")
                     choice = input("> ").lower()
                     if choice == "quit":
+                        print()
+                        print("Note: file changes will be saved if the file path is given else changes will not be applied to dataframe when you quit")
+                        print()
                         file_path = input("Enter the file path to save changes: ")
                         try:   
                             write_changes(df, file_path)
@@ -57,9 +59,15 @@ def main():
                     elif choice == 5:
                         manage_dataframe(df)
                     elif choice== 6:
-                        filter_dict = get_filter_data()
-                        if filter_dict:
-                            filtered_df = filter_dataframe(df, filter_dict)
+                        filter_dict = get_filter_data(df)  # Prompt the user for filter criteria
+                        if filter_dict:  # Ensure there are filters to apply
+                            filtered_df = filter_dataframe(df, filter_dict)  # Apply the filters
+                            if not filtered_df.empty:
+                                print(filtered_df)
+                            else:
+                                print("No data matched the filter criteria.")
+                        else:
+                            print("No filters were applied.")
                     elif choice == 7:
                         print()
                         print("1 - Line plots \n2 - Bar plots \n3 - Histograms \n4 - Pie charts \n5 - Area plots \n6 - scatter plot")

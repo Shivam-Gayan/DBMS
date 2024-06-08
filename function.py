@@ -367,7 +367,7 @@ def write_changes(df, file_path):
     else:
         print("File type not supported for writing changes.")
 
-def get_filter_data():
+def get_filter_data(df):
     """Prompts the user to input filter data for multiple columns and returns it as a dictionary."""
     filter_dict = {}
     print()
@@ -375,13 +375,19 @@ def get_filter_data():
         column = input("Enter the column name to filter (or 'done' to finish): ")
         if column.lower() == 'done':
             break
-
+        
+        if column not in df.columns:
+            print(f"Error: Column '{column}' not found in DataFrame. Please enter a valid column name.")
+            continue
+        
         if column not in filter_dict:
             filter_dict[column] = []
 
         while True:
             while True:
+                print()
                 filter_type = input(f"Enter the filter type (gt (greater than), lt (less than), ge (greater than or equal to), le (less than or equal to), eq (equal to), ne (not equal to), startswith, endswith, contains, isin) for column '{column}': ")
+                print()
                 if filter_type not in ['gt', 'lt', 'ge', 'le', 'eq', 'ne', 'startswith', 'endswith', 'contains', 'isin']:
                     print("Invalid filter type. Please enter a valid filter type.")
                 else:
@@ -405,8 +411,9 @@ def get_filter_data():
             }
 
             filter_dict[column].append(filter_data)
-
+            print()
             more_conditions = input(f"Do you want to add another condition for column '{column}'? (yes/no): ")
+            print()
             if more_conditions.lower() != 'yes':
                 break
 
@@ -493,7 +500,6 @@ def filter_dataframe(df, filter_dict):
     # Check if there are valid columns and the final filtered DataFrame has fewer rows than the initial DataFrame
     if len(valid_columns) > 1 or (len(valid_columns) == 1 and len(filtered_df) < initial_length):
         print("Final filtered DataFrame:")
-        print(filtered_df)
     elif len(valid_columns) == 0:
         print("No valid filters applied. No changes made to the DataFrame.")
     else:
