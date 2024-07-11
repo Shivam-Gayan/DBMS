@@ -366,6 +366,10 @@ def write_changes(df, file_path):
         return None
     else:
         print("File type not supported for writing changes.")
+        print("writing changes to csv file")
+        if file_extension not in file_formats:
+            df.to_csv("Changed_DataFrame.csv")
+
 
 def get_filter_data(df):
     """Prompts the user to input filter data for multiple columns and returns it as a dictionary."""
