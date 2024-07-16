@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import openpyxl
 from function import file_auto_detection,create_new_df,modify_dataframe_columns,modify_dataframe_rows,clean_dataframe,view_dataframe,manage_dataframe,write_changes,get_filter_data,filter_dataframe
-from graphs import line_plot,bar_plot,histogram,pie_chart,stack_plot,scatter_plot,multiple_subplots
+from graphs import line_plot,bar_plot,histogram,pie_chart,stack_plot,scatter_plot
 
 def main(): 
     try:

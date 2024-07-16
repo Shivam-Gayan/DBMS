@@ -71,6 +71,25 @@ def apply_customizations(customizations):
     
     plt.tight_layout()
 
+def handle_plot_saving_and_customization(title):
+    try:
+        customize = input("Do you want to customize the graph (yes/no): ").lower()
+        choose = input("Do you want to export the graph (yes/no): ").lower()
+        if choose == "yes" and customize == "yes":
+            customize_plot()
+            plt.savefig(f"{title}.png")
+            plt.show()  
+        elif choose == "no" and customize == "yes":
+            customize_plot()
+            plt.show()
+        elif choose == "yes" and customize == "no":
+            plt.savefig(f"{title}.png")
+            plt.show()
+        elif choose == "no" and customize == "no":
+            plt.show()
+    except Exception as e:
+        print(f"Error: {e}")
+
 def line_plot(df, x=None, y=None):
     # Check if both x and y are None
     if x is None and y is None:
@@ -83,17 +102,22 @@ def line_plot(df, x=None, y=None):
     if y is not None and y not in df.columns:
         print(f"Error: Column '{y}' does not exist in the DataFrame.")
         return
+
+    # Check if columns are numeric or categorical
     if x is not None and y is not None:
-        if df[x].dtype not in ["int64", "float64"] or df[y].dtype not in ["int64", "float64"]:
-            print(f"Error: Columns are not numeric.")
+        if not pd.api.types.is_numeric_dtype(df[y]):
+            print(f"Error: Column '{y}' is not numeric.")
+            return
+        if not pd.api.types.is_numeric_dtype(df[x]) and not pd.api.types.is_categorical_dtype(df[x]) and not pd.api.types.is_object_dtype(df[x]):
+            print(f"Error: Column '{x}' is neither numeric nor categorical.")
             return
     elif x is None and y is not None:
-        if df[y].dtype not in ["int64", "float64"]:
+        if not pd.api.types.is_numeric_dtype(df[y]):
             print(f"Error: Column '{y}' is not numeric.")
             return
     elif x is not None and y is None:
-        if df[x].dtype not in ["int64", "float64"]:
-            print(f"Error: Column '{x}' is not numeric.")
+        if not pd.api.types.is_numeric_dtype(df[x]) and not pd.api.types.is_categorical_dtype(df[x]) and not pd.api.types.is_object_dtype(df[x]):
+            print(f"Error: Column '{x}' is neither numeric nor categorical.")
             return
 
     name_x = input("Enter the label for x axis: ")
@@ -101,6 +125,8 @@ def line_plot(df, x=None, y=None):
     title = input("Enter the title for the graph: ")
 
     if x is not None and y is not None:
+        if pd.api.types.is_categorical_dtype(df[x]) or pd.api.types.is_object_dtype(df[x]):
+            df[x] = pd.Categorical(df[x]).codes
         plt.plot(df[x], df[y])
     elif y is not None:
         plt.plot(df.index, df[y])
@@ -111,27 +137,9 @@ def line_plot(df, x=None, y=None):
     plt.ylabel(name_y)
     plt.title(title)
     
-    try:
-        customize = input("Do you want to customize the graph (yes/no): ").lower()
-        choose = input("Do you want to export the graph (yes/no): ").lower()
-        if choose == "yes" and customize == "yes":
-            customize_plot()
-            plt.savefig(f"{title}.png")
-            plt.show()  
-        elif choose == "no" and customize == "yes":
-            customize_plot()
-            plt.show()
-        elif choose == "yes" and customize_plot() == "no":
-            plt.savefig(f"{title}.png")
-            plt.show()
-        elif choose == "no" and customize_plot() == "no":
-            plt.show()
-    except:
-        print("Please enter valid input.")
-
+    handle_plot_saving_and_customization(title)
 
 def bar_plot(df, columns):
-
     # Validate that all columns are present in the DataFrame
     for column in columns:
         if column not in df.columns:
@@ -144,12 +152,6 @@ def bar_plot(df, columns):
             print(f"Error: Column '{column}' is not numeric.")
             return
     
-    # Accept input for labels
-    labels = []
-    for column in columns:
-        label = input(f"Enter the label for {column}: ")
-        labels.append(label)
-
     # Plot the data
     df[columns].plot(kind='bar')
     
@@ -161,25 +163,9 @@ def bar_plot(df, columns):
     plt.xlabel(name_x)
     plt.ylabel(name_y)
     plt.title(title)
-    plt.legend(labels)
+    plt.legend(columns)
     
-    try:
-        customize = input("Do you want to customize the graph (yes/no): ").lower()
-        choose = input("Do you want to export the graph (yes/no): ").lower()
-        if choose == "yes" and customize == "yes":
-            customize_plot()
-            plt.savefig(f"{title}.png")
-            plt.show()  
-        elif choose == "no" and customize == "yes":
-            customize_plot()
-            plt.show()
-        elif choose == "yes" and customize_plot() == "no":
-            plt.savefig(f"{title}.png")
-            plt.show()
-        elif choose == "no" and customize_plot() == "no":
-            plt.show()
-    except:
-        print("Please enter valid input.")
+    handle_plot_saving_and_customization(title)
 
 
 def histogram(df):
@@ -192,28 +178,12 @@ def histogram(df):
         plt.title(f'Histogram of {columnname}')
     else:
         print("Column not found")
-    try:
-        customize = input("Do you want to customize the graph (yes/no): ").lower()
-        choose = input("Do you want to export the graph (yes/no): ").lower()
-        if choose == "yes" and customize == "yes":
-            customize_plot()
-            plt.savefig(f"Histogram of {columnname}.png")
-            plt.show()  
-        elif choose == "no" and customize == "yes":
-            customize_plot()
-            plt.show()
-        elif choose == "yes" and customize_plot() == "no":
-            plt.savefig(f"Histogram of {columnname}.png")
-            plt.show()
-        elif choose == "no" and customize_plot() == "no":
-            plt.show()
-    except:
-        print("Please enter valid input.")
-
-
+        return
+    
+    title = f'Histogram of {columnname}'
+    handle_plot_saving_and_customization(title)
 
 def pie_chart(df, size_column, labels_column=None):
-
     # Validate that size_column exists in the DataFrame
     if size_column not in df.columns:
         print(f"Error: Column '{size_column}' does not exist in the DataFrame.")
@@ -229,7 +199,6 @@ def pie_chart(df, size_column, labels_column=None):
     
     # Extract labels from the DataFrame if provided
     if labels_column:
-        # Validate that labels_column exists in the DataFrame
         if labels_column not in df.columns:
             print(f"Error: Column '{labels_column}' does not exist in the DataFrame.")
             return
@@ -243,26 +212,8 @@ def pie_chart(df, size_column, labels_column=None):
     title = input("Enter the title for the graph: ")
     plt.title(title)
     
-    try:
-        customize = input("Do you want to customize the graph (yes/no): ").lower()
-        choose = input("Do you want to export the graph (yes/no): ").lower()
-        if choose == "yes" and customize == "yes":
-            customize_plot()
-            plt.savefig(f"{title}.png")
-            plt.show()  
-        elif choose == "no" and customize == "yes":
-            customize_plot()
-            plt.show()
-        elif choose == "yes" and customize_plot() == "no":
-            plt.savefig(f"{title}.png")
-            plt.show()
-        elif choose == "no" and customize_plot() == "no":
-            plt.show()
-    except:
-        print("Please enter valid input.")
 
 def stack_plot(df, columns):
-
     # Validate that all columns are present in the DataFrame
     for column in columns:
         if column not in df.columns:
@@ -285,25 +236,9 @@ def stack_plot(df, columns):
     plt.title(title)
     plt.legend()
     
-    try:
-        customize = input("Do you want to customize the graph (yes/no): ").lower()
-        choose = input("Do you want to export the graph (yes/no): ").lower()
-        if choose == "yes" and customize == "yes":
-            customize_plot()
-            plt.savefig(f"{title}.png")
-            plt.show()  
-        elif choose == "no" and customize == "yes":
-            customize_plot()
-            plt.show()
-        elif choose == "yes" and customize_plot() == "no":
-            plt.savefig(f"{title}.png")
-            plt.show()
-        elif choose == "no" and customize_plot() == "no":
-            plt.show()
-    except:
-        print("Please enter valid input.")
+    handle_plot_saving_and_customization(title)
 
-def scatter_plot(df,column_x,column_y,size):
+def scatter_plot(df,column_x,column_y,size = 20):
     
     if column_x not in df.columns:
         print(f"Error: Column '{column_x}' does not exist in the DataFrame.")
@@ -328,20 +263,4 @@ def scatter_plot(df,column_x,column_y,size):
     plt.ylabel(name_y)
     plt.title(title)
     
-    try:
-        customize = input("Do you want to customize the graph (yes/no): ").lower()
-        choose = input("Do you want to export the graph (yes/no): ").lower()
-        if choose == "yes" and customize == "yes":
-            customize_plot()
-            plt.savefig(f"{title}.png")
-            plt.show()  
-        elif choose == "no" and customize == "yes":
-            customize_plot()
-            plt.show()
-        elif choose == "yes" and customize_plot() == "no":
-            plt.savefig(f"{title}.png")
-            plt.show()
-        elif choose == "no" and customize_plot() == "no":
-            plt.show()
-    except:
-        print("Please enter valid input.")
+    handle_plot_saving_and_customization(title)
