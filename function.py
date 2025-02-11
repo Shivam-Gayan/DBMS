@@ -167,31 +167,52 @@ def modify_dataframe_rows(df):
         for column in df.columns:
             value = input(f"Enter value for column '{column}': ")
             new_row[column] = value
-        df = df.append(new_row, ignore_index=True)
 
+        # Use pd.concat to add the new row
+        new_row_df = pd.DataFrame([new_row])  # Convert the new row to a DataFrame
+        df = pd.concat([df, new_row_df], ignore_index=True)
+        print("Row added successfully.")
+    
     elif choice == "2":
-        # Insert row at a specified index
-        index = int(input("Enter the index where you want to insert the row: "))
-        new_row = {}
-        for column in df.columns:
-            value = input(f"Enter value for column '{column}': ")
-            new_row[column] = value
-        df = df.append(new_row, ignore_index=True)
-        df = df.reindex([*df.index[:index], len(df.index), *df.index[index:]])
+        # Insert a row at a specified index
+        try:
+            index = int(input("Enter the index at which to insert the row: "))
+            new_row = {}
+            for column in df.columns:
+                value = input(f"Enter value for column '{column}': ")
+                new_row[column] = value
 
+            new_row_df = pd.DataFrame([new_row])  # Convert the new row to a DataFrame
+            df = pd.concat([df.iloc[:index], new_row_df, df.iloc[index:]]).reset_index(drop=True)
+            print("Row inserted successfully.")
+        except ValueError:
+            print("Please enter a valid index.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    
     elif choice == "3":
         # Remove a row
-        index = int(input("Enter the index of the row to remove: "))
-        df = df.drop(index=index,inplace=True)
-
+        try:
+            index = int(input("Enter the index of the row to remove: "))
+            df = df.drop(index).reset_index(drop=True)
+            print("Row removed successfully.")
+        except ValueError:
+            print("Please enter a valid index.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    
     elif choice == "4":
         # Set labeled row indexes
-        new_index_labels = input("Enter new index labels for the rows separated by commas: ").split(',')
-        df.index = new_index_labels
-
+        index_column = input("Enter the column name to set as the index: ")
+        if index_column in df.columns:
+            df = df.set_index(index_column)
+            print("Index set successfully.")
+        else:
+            print("Column not found.")
+    
     else:
-        print()
-
+        print("Invalid choice.")
+    
     return df
 
 def clean_dataframe(df):
